@@ -47,7 +47,7 @@ object WordCount {
       .sum(1)
 
     // execute and print result
-    counts.print()
+    counts.setParallelism(1).print()
 
   }
 }

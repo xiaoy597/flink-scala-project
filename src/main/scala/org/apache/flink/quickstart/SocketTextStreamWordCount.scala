@@ -49,7 +49,9 @@ object SocketTextStreamWordCount {
       System.err.println("USAGE:\nSocketTextStreamWordCount <hostname> <port>")
       return
     }
-    
+
+    args.foreach(println)
+
     val hostName = args(0)
     val port = args(1).toInt
 
