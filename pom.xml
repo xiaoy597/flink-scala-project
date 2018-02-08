@@ -111,6 +111,16 @@ under the License.
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_${scala.binary.version}</artifactId>
+			<version>0.10.0.1</version>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka-0.10_2.11</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 	</dependencies>
 
 	<profiles>
@@ -162,6 +172,16 @@ under the License.
 					<version>${log4j.version}</version>
 					<scope>provided</scope>
 				</dependency>
+				<dependency>
+					<groupId>org.apache.kafka</groupId>
+					<artifactId>kafka_${scala.binary.version}</artifactId>
+					<version>0.10.0.1</version>
+				</dependency>
+                <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-connector-kafka-0.10_2.11</artifactId>
+                    <version>1.4.0</version>
+                </dependency>
 			</dependencies>
 
 			<build>
@@ -260,7 +280,7 @@ under the License.
 								<!-- For Flink connector classes -->
 								<artifactItem>
 									<groupId>org.apache.flink</groupId>
-									<artifactId>flink-connector-kafka-0.11_2.11</artifactId>
+									<artifactId>flink-connector-kafka-0.10_2.11</artifactId>
 									<version>1.4.0</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
@@ -271,7 +291,7 @@ under the License.
 								<artifactItem>
 									<groupId>org.apache.kafka</groupId>
 									<artifactId>kafka_${scala.binary.version}</artifactId>
-									<version>0.11.0.2</version>
+									<version>0.10.0.1</version>
 									<type>jar</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.build.directory}/classes</outputDirectory>
