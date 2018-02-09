@@ -111,16 +111,16 @@ under the License.
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_${scala.binary.version}</artifactId>
-			<version>0.10.0.1</version>
-		</dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka-0.10_2.11</artifactId>
             <version>1.4.0</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.flink</groupId>-->
+            <!--<artifactId>flink-connector-kafka-0.8_2.11</artifactId>-->
+            <!--<version>1.4.0</version>-->
+        <!--</dependency>-->
 	</dependencies>
 
 	<profiles>
@@ -172,16 +172,16 @@ under the License.
 					<version>${log4j.version}</version>
 					<scope>provided</scope>
 				</dependency>
-				<dependency>
-					<groupId>org.apache.kafka</groupId>
-					<artifactId>kafka_${scala.binary.version}</artifactId>
-					<version>0.10.0.1</version>
-				</dependency>
                 <dependency>
                     <groupId>org.apache.flink</groupId>
                     <artifactId>flink-connector-kafka-0.10_2.11</artifactId>
                     <version>1.4.0</version>
                 </dependency>
+                <!--<dependency>-->
+                    <!--<groupId>org.apache.flink</groupId>-->
+                    <!--<artifactId>flink-connector-kafka-0.8_2.11</artifactId>-->
+                    <!--<version>1.4.0</version>-->
+                <!--</dependency>-->
 			</dependencies>
 
 			<build>
@@ -263,45 +263,45 @@ under the License.
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<!-- executed just before the package phase -->
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<!-- For Flink connector classes -->
-								<artifactItem>
-									<groupId>org.apache.flink</groupId>
-									<artifactId>flink-connector-kafka-0.10_2.11</artifactId>
-									<version>1.4.0</version>
-									<type>jar</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/classes</outputDirectory>
-									<includes>org/apache/flink/**</includes>
-								</artifactItem>
-								<!-- For Kafka API classes -->
-								<artifactItem>
-									<groupId>org.apache.kafka</groupId>
-									<artifactId>kafka_${scala.binary.version}</artifactId>
-									<version>0.10.0.1</version>
-									<type>jar</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/classes</outputDirectory>
-									<includes>kafka/**</includes>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-dependency-plugin</artifactId>-->
+				<!--<version>2.9</version>-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<id>unpack</id>-->
+						<!--&lt;!&ndash; executed just before the package phase &ndash;&gt;-->
+						<!--<phase>prepare-package</phase>-->
+						<!--<goals>-->
+							<!--<goal>unpack</goal>-->
+						<!--</goals>-->
+						<!--<configuration>-->
+							<!--<artifactItems>-->
+								<!--&lt;!&ndash; For Flink connector classes &ndash;&gt;-->
+								<!--<artifactItem>-->
+									<!--<groupId>org.apache.flink</groupId>-->
+									<!--<artifactId>flink-connector-kafka-0.10_2.11</artifactId>-->
+									<!--<version>1.4.0</version>-->
+									<!--<type>jar</type>-->
+									<!--<overWrite>false</overWrite>-->
+									<!--<outputDirectory>${project.build.directory}/classes</outputDirectory>-->
+									<!--<includes>org/apache/flink/**</includes>-->
+								<!--</artifactItem>-->
+								<!--&lt;!&ndash; For Kafka API classes &ndash;&gt;-->
+								<!--<artifactItem>-->
+									<!--<groupId>org.apache.kafka</groupId>-->
+									<!--<artifactId>kafka_${scala.binary.version}</artifactId>-->
+									<!--<version>0.10.0.1</version>-->
+									<!--<type>jar</type>-->
+									<!--<overWrite>false</overWrite>-->
+									<!--<outputDirectory>${project.build.directory}/classes</outputDirectory>-->
+									<!--<includes>kafka/**</includes>-->
+								<!--</artifactItem>-->
+							<!--</artifactItems>-->
+						<!--</configuration>-->
+					<!--</execution>-->
+				<!--</executions>-->
+			<!--</plugin>-->
 		</plugins>
 	</build>
 </project>
