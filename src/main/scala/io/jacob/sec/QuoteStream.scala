@@ -3,13 +3,18 @@ package io.jacob.sec
 import java.text.SimpleDateFormat
 import java.util.Properties
 
+import org.apache.flink.api.common.functions.RichFlatMapFunction
 import org.apache.flink.api.common.serialization.SimpleStringSchema
+import org.apache.flink.api.common.state.{ValueState, ValueStateDescriptor}
+import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
 import org.apache.flink.streaming.api.scala.{StreamExecutionEnvironment, _}
 import org.apache.flink.streaming.api.watermark.Watermark
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
+import org.apache.flink.util.Collector
 
 /**
   * Created by xiaoy on 2018/2/9.
@@ -33,7 +38,7 @@ object QuoteStream {
 
     val sseQuoteStream = env.addSource[String](myConsumer)
 
-    sseQuoteStream.map( x => {
+    sseQuoteStream.map(x => {
       val fields = x.split("\\|")
 
       SSEQuote(fields(1), // securityId
@@ -46,7 +51,9 @@ object QuoteStream {
         fields(13).toFloat, //sellPrice1
         fields(14).toLong //sellVolume1
       )
-    }).keyBy("securityId").timeWindow(Time.seconds(30)).max("tradePrice").print()
+    }).keyBy("securityId")
+      .window(TumblingEventTimeWindows.of(Time.minutes(5)))
+      .max("tradePrice").print()
 
 
     env.execute("SSE Quote Stream")
@@ -54,17 +61,17 @@ object QuoteStream {
 
 }
 
-case class SSEQuote (
-                    securityId: String,
-                    openPrice:Float,
-                    highPrice: Float,
-                    lowPrice: Float,
-                    tradePrice: Float,
-                    buyPrice1: Float,
-                    buyVolume1: Long,
-                    sellPrice1: Float,
-                    sellVolume1: Long
-                    )
+case class SSEQuote(
+                     securityId: String,
+                     openPrice: Float,
+                     highPrice: Float,
+                     lowPrice: Float,
+                     tradePrice: Float,
+                     buyPrice1: Float,
+                     buyVolume1: Long,
+                     sellPrice1: Float,
+                     sellVolume1: Long
+                   )
 
 class SSEQuoteTmGenerator extends AssignerWithPeriodicWatermarks[String] {
 
@@ -103,3 +110,50 @@ class SZSEQuoteTmGenerator extends AssignerWithPeriodicWatermarks[String] {
     new Watermark(currentMaxTimestamp - maxOutOfOrderness)
   }
 }
+
+case class SecQuote(
+                     securityId: String,
+                     openPrice: Float,
+                     highPrice: Float,
+                     lowPrice: Float,
+                     tradePrice: Float,
+                     tradeTime: Long
+                   )
+
+case class SecState(
+                     windowStartTime: Long,
+                     windowLength: Int,
+                     baseline: Float,
+                     quoteList: List[SecQuote]
+                   )
+
+case class TradeCommand(
+                         securityId: String,
+                         tradeType: String
+                       )
+
+class CamarillaFunc extends RichFlatMapFunction[SecQuote, TradeCommand] {
+
+  private var state: ValueState[SecState] = _
+
+  override def flatMap(in: SecQuote, collector: Collector[TradeCommand]): Unit = {
+
+    val currStateValue =
+      if (state.value() != null) state.value()
+      else initSecState(in.securityId)
+
+    
+  }
+
+  override def open(parameters: Configuration): Unit = {
+    state = getRuntimeContext.getState(
+      new ValueStateDescriptor[SecState]("sec-state", createTypeInformation[SecState])
+    )
+  }
+
+  private def initSecState(securityId: String): SecState = {
+    null
+  }
+}
+
+
